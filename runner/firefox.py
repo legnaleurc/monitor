@@ -14,6 +14,9 @@ AUTO_PATH = '/tmp/gmautoinstall.xpi'
 
 class FirefoxRunner(Runner):
 
+    def __init__(self):
+        super(FirefoxRunner, self).__init__()
+
     def do_prepare(self):
         if not os.path.exists(GM_PATH):
             download(GM_URL, GM_PATH)
@@ -22,11 +25,12 @@ class FirefoxRunner(Runner):
         profile.add_extension(extension=GM_PATH)
         profile.add_extension(extension=AUTO_PATH)
 
-        with quiting(webdriver.Firefox(firefox_profile=profile)) as driver:
-            try:
-                driver.get(USERSCRIPT)
-            except Exception as e:
-                # expected exception: UI thread locked by modal dialog
-                pass
-            # wait for the dialog disappear
-            time.sleep(5)
+        self.driver = webdriver.Firefox(firefox_profile=profile)
+
+        try:
+            self.driver.get(USERSCRIPT)
+        except Exception as e:
+            # expected exception: UI thread locked by modal dialog
+            pass
+        # wait for the dialog disappear
+        time.sleep(5)
