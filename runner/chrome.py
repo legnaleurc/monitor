@@ -2,6 +2,7 @@ import time
 from urllib.parse import urlparse
 import os
 import zipfile
+import stat
 
 import requests
 from selenium import webdriver
@@ -38,7 +39,7 @@ class ChromeRunner(Runner):
             download(CHROME_DRIVER_URL.format(version=version), CD_ZIP_PATH)
             archive = zipfile.ZipFile(CD_ZIP_PATH);
             archive.extractall(path='/tmp')
-            os.system('chmod a+x ' + CD_PATH)
+            os.chmod(CD_PATH, stat.S_IXUSR)
         if not os.path.exists(TM_PATH):
             download(CHROME_STORE_URL.format(id=TM_ID), TM_PATH, headers=REQUEST_HEADERS)
 
