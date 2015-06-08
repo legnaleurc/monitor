@@ -1,0 +1,6 @@
+*.pyc
+*.exe
+*.zip
+*.xpi
+*.crx
+/tmp/*
