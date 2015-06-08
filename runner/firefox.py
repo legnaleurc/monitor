@@ -8,9 +8,8 @@ from .base import USERSCRIPT, download, quiting, Runner
 
 USERSCRIPT = 'https://adsbypasser.github.io/releases/adsbypasser.user.js'
 GM_URL = 'https://addons.mozilla.org/firefox/downloads/file/282084/greasemonkey-2.3-fx.xpi'
-GM_PATH = '/tmp/greasemonkey.xpi'
-AUTO_PATH = '/tmp/gmautoinstall.xpi'
-
+GM_EXT = 'greasemonkey.xpi'
+AUTO_EXT = 'gmautoinstall.xpi'
 
 class FirefoxRunner(Runner):
 
@@ -18,12 +17,12 @@ class FirefoxRunner(Runner):
         super(FirefoxRunner, self).__init__()
 
     def do_prepare(self):
-        if not os.path.exists(GM_PATH):
-            download(GM_URL, GM_PATH)
+        if not os.path.exists(GM_EXT):
+            download(GM_URL, GM_EXT)
 
         profile = webdriver.FirefoxProfile()
-        profile.add_extension(extension=GM_PATH)
-        profile.add_extension(extension=AUTO_PATH)
+        profile.add_extension(extension=GM_EXT)
+        profile.add_extension(extension=AUTO_EXT)
 
         self.driver = webdriver.Firefox(firefox_profile=profile)
 
