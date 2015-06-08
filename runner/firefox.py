@@ -26,6 +26,7 @@ class FirefoxRunner(Runner):
         profile = webdriver.FirefoxProfile()
         profile.add_extension(extension=GM_EXT)
         profile.add_extension(extension=AUTO_EXT)
+        profile.set_preference("extensions.greasemonkey.installDelay", 0);
 
         self.driver = webdriver.Firefox(firefox_profile=profile)
 
@@ -35,4 +36,5 @@ class FirefoxRunner(Runner):
             # expected exception: UI thread locked by modal dialog
             pass
         # wait for the dialog disappear
-        time.sleep(5)
+        # TODO gmautoinstall should flag when it's finished, to avoid this
+        time.sleep(1)
