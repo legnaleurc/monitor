@@ -3,14 +3,14 @@ import os
 
 from selenium import webdriver
 
-from .base import USERSCRIPT, download, quiting, Runner
+from .base import USERSCRIPT, download, Runner
 
 
-USERSCRIPT = 'https://adsbypasser.github.io/releases/adsbypasser.user.js'
 GM_URL = 'https://addons.mozilla.org/firefox/downloads/file/282084/greasemonkey-2.3-fx.xpi'
 GM_EXT = 'greasemonkey.xpi'
 AUTO_URL = 'https://github.com/legnaleurc/gmautoinstall/raw/master/releases/gmautoinstall.xpi'
 AUTO_EXT = 'gmautoinstall.xpi'
+
 
 class FirefoxRunner(Runner):
 
