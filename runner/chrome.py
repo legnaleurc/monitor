@@ -1,6 +1,7 @@
 import time
 from urllib.parse import urlparse
-from sys import platform
+import platform
+import sys
 import os
 import zipfile
 import stat
@@ -8,7 +9,7 @@ import stat
 import requests
 from selenium import webdriver
 
-from .base import USERSCRIPT, download, quiting, Runner
+from .base import USERSCRIPT, download, Runner
 
 
 CHROME_DRIVER_META_URL = 'http://chromedriver.storage.googleapis.com/LATEST_RELEASE'
@@ -28,21 +29,30 @@ def get_version():
     r = requests.get(url=CHROME_DRIVER_META_URL)
     return r.text
 
+
 def driver_url(version):
-    if platform == 'linux' or platform == 'linux2':
-        return CHROME_DRIVER_URL.format(os='linux64', version=version)
-    if platform == 'darwin':
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+
+    if system == 'linux':
+        name = 'linux64' if machine == 'x86_64' else 'linux32'
+        return CHROME_DRIVER_URL.format(os=name, version=version)
+    if system == 'darwin':
         return CHROME_DRIVER_URL.format(os='mac32', version=version)
+    if system == 'windows' or system.startswith('cygwin'):
+        return CHROME_DRIVER_URL.format(os='win32', version=version)
 
     # Default behavior
-    return CHROME_DRIVER_URL.format(os='win32', version=version)
+    return None
+
 
 def driver_executable():
-    if platform == 'linux' or platform == 'linux2' or platform == 'darwin':
-        return 'chromedriver'
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
+        return 'chromedriver.exe'
 
     # Default behavior
-    return 'chromedriver.exe'
+    return 'chromedriver'
+
 
 class ChromeRunner(Runner):
 
