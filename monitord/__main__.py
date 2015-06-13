@@ -1,5 +1,5 @@
 import os
-from runner import browsers
+from monitord.runner import browsers
 
 TMP = 'tmp'
 cases = [
