@@ -20,9 +20,9 @@ REQUEST_HEADERS = {
     'Referer': 'https://chrome.google.com',
 }
 
-CD_ZIP = 'chromedriver.zip'
+CD_ZIP = '/tmp/chromedriver.zip'
 TM_ID = 'dhdgffkkebhmkfjojejmpbldmpobfkfo'
-TM_EXT = 'tampermonkey.crx'
+TM_EXT = '/tmp/tampermonkey.crx'
 
 
 def get_version():
@@ -33,6 +33,7 @@ def get_version():
 def driver_url(version):
     system = platform.system().lower()
     machine = platform.machine().lower()
+    print(system, machine)
 
     if system == 'linux':
         name = 'linux64' if machine == 'x86_64' else 'linux32'
@@ -51,7 +52,7 @@ def driver_executable():
         return 'chromedriver.exe'
 
     # Default behavior
-    return 'chromedriver'
+    return '/tmp/chromedriver'
 
 
 class ChromeRunner(Runner):
@@ -64,8 +65,8 @@ class ChromeRunner(Runner):
         if not os.path.exists(CD_EXEC):
             version = get_version()
             download(driver_url(version), CD_ZIP)
-            archive = zipfile.ZipFile(CD_ZIP);
-            archive.extract(CD_EXEC)
+            archive = zipfile.ZipFile(CD_ZIP)
+            archive.extract(os.path.basename(CD_EXEC), os.path.dirname(CD_EXEC))
             os.chmod(CD_EXEC, stat.S_IXUSR)
         if not os.path.exists(TM_EXT):
             download(CHROME_STORE_URL.format(id=TM_ID), TM_EXT, headers=REQUEST_HEADERS)

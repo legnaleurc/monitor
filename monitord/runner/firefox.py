@@ -7,9 +7,9 @@ from .base import USERSCRIPT, download, Runner
 
 
 GM_URL = 'https://addons.mozilla.org/firefox/downloads/file/282084/greasemonkey-2.3-fx.xpi'
-GM_EXT = 'greasemonkey.xpi'
+GM_EXT = '/tmp/greasemonkey.xpi'
 AUTO_URL = 'https://github.com/legnaleurc/gmautoinstall/raw/master/releases/gmautoinstall.xpi'
-AUTO_EXT = 'gmautoinstall.xpi'
+AUTO_EXT = '/tmp/gmautoinstall.xpi'
 
 
 class FirefoxRunner(Runner):
@@ -21,7 +21,7 @@ class FirefoxRunner(Runner):
         if not os.path.exists(GM_EXT):
             download(GM_URL, GM_EXT)
         if not os.path.exists(AUTO_EXT):
-            download(AUTO_URL, AUTO_EXT)            
+            download(AUTO_URL, AUTO_EXT)
 
         profile = webdriver.FirefoxProfile()
         profile.add_extension(extension=GM_EXT)
