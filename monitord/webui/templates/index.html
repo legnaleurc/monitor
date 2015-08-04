@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AdsBypasser Status Monitor</title>
+
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
+</head>
+<body>
+
+  <!-- begin container -->
+  <div class="container">
+
+    <div class="page-header">
+      <h1>AdsBypasser Status Monitor</h1>
+      <p class="lead">Last Updated: 2015/06/31 12:34:56</p>
+      <p class="lead">Build ID: 789</p>
+    </div>
+
+    <div class="row" id="content">
+    </div>
+
+  </div>
+  <!-- end container -->
+
+  <!-- begin 3rd-party -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.1/backbone-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.2/backbone.marionette.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <!-- end 3rd-party -->
+
+  <!-- begin template -->
+  <script type="text/template" id="tpl-siteresults">
+    <thead>
+      <tr class="header">
+        <th>Name</th>
+        <th>Mozilla Firefox</th>
+        <th>Google Chrome</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </script>
+  <script type="text/template" id="tpl-siteresult">
+    <td><%= name %></td>
+    <td><%= name %></td>
+    <td><%= name %></td>
+  </script>
+  <!-- end template -->
+
+  <!-- begin project -->
+  <script src="{{ static_url('index.js') }}"></script>
+  <!-- end project -->
+</body>
+</html>

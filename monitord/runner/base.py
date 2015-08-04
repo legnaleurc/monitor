@@ -26,6 +26,18 @@ def download(remote, local, headers=None):
     return size
 
 
+class FlavorFactory(object):
+
+    _flavors = {}
+
+    @classmethod
+    def create(cls, flavor, *args, **kwargs):
+        if flavor not in cls._flavors:
+            return None
+        Flavor = cls._flavors[flavor]
+        return Flavor(*args, **kwargs)
+
+
 class Runner(object):
 
     def __init__(self):

@@ -1,21 +1,41 @@
+#! /usr/bin/env python3
+
 import os
-from monitord.runner import browsers
+import sys
 
-TMP = 'tmp'
-cases = [
-    ('http://linkbucks.com/BXHk/url/92b96ad805273519f7b83349e855b6296666e0cf77334c7c5606777aebde100db5b6f44e8dc30b', 'http://www.keeplinks.eu/p/5472c60b831fa'),
-]
+from tornado import ioloop, web, log
 
-def working_directory():
-    if not os.path.exists(TMP):
-        os.makedirs(TMP)
-    os.chdir(TMP)
+from monitord.webui import view
+from monitord import settings
 
-working_directory()
 
-for browser in browsers:
-    browser.prepare()
-    for case in cases:
-        result = browser.run(case[0], case[1])
-        print(result)
-    browser.close()
+def main(args=None):
+    if args is None:
+        args = sys.argv
+
+    setup_logger()
+
+    main_loop = ioloop.IOLoop.instance();
+
+    opts = {
+        'static_path': os.path.join(settings.MODULE_ROOT, 'webui/static'),
+        'debug': True,
+    }
+    application = web.Application([
+        (r'/', view.RootHandler),
+    ], **opts)
+
+    application.listen(8000)
+
+    main_loop.start()
+
+    return 0
+
+
+def setup_logger():
+    log.enable_pretty_logging()
+
+
+if __name__ == '__main__':
+    exit_code = main()
+    sys.exit(exit_code)
