@@ -2,7 +2,7 @@
 # TODO decide which tables should be indexed
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 
 
 Base = declarative_base()
@@ -25,6 +25,7 @@ class UserScriptManager(Base):
     name = Column(String)
     channel = Column(String)
     browser_id = Column(Integer)
+    enabled = Column(Boolean)
 
 
 class SiteResult(Base):

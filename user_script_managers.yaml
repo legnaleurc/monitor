@@ -1,0 +1,37 @@
+greasemonkey:
+  -
+    browser:
+      name: firefox
+      channel: esr
+    channel: 1.x
+  -
+    browser:
+      name: firefox
+      channel: release
+    channel: 3.x
+  -
+    browser:
+      name: firefox
+      channel: beta
+    channel: 3.x
+tampermonkey:
+  -
+    browser:
+      name: chrome
+      channel: stable
+    channel: stable
+  -
+    browser:
+      name: chrome
+      channel: beta
+    channel: stable
+  -
+    browser:
+      name: chrome
+      channel: stable
+    channel: beta
+  -
+    browser:
+      name: chrome
+      channel: beta
+    channel: beta

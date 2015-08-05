@@ -1,4 +1,7 @@
--
-  firefox_esr:
--
-  chrome_stable:
+firefox:
+  - esr
+  - release
+  - beta
+chrome:
+  - stable
+  - beta

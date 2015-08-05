@@ -1,6 +1,7 @@
 import contextlib
 import time
 
+from tornado import gen
 import requests
 
 
@@ -38,9 +39,9 @@ class FlavorFactory(object):
         return Flavor(*args, **kwargs)
 
     def create_browsers(self):
-        return self.do_create_browsers()
+        return [self.do_create_browser(usm_name, usm_channel, b_name, b_channel) for usm_name, usm_channel, b_name, b_channel in usms]
 
-    def do_create_browsers(self):
+    def do_create_browser(self, usm_name, usm_channel, browser_name, browser_channel):
         raise NotImplementedError()
 
 
@@ -57,8 +58,9 @@ class Runner(object):
     def driver(self, driver):
         self._driver = driver
 
+    @gen.coroutine
     def prepare(self):
-        self.do_prepare()
+        yield gen.maybe_future(self.do_prepare())
 
     def close(self):
         self._driver.quit()

@@ -1,12 +1,45 @@
-from ..base import FlavorFactory
+from tornado import gen
+
+from monitord.runner.base import FlavorFactory, Runner
+from monitord.util import shell_call
 
 
 class DockerFlavor(FlavorFactory):
 
-    def do_create_browsers(self):
-        return (
-            DockerFirefoxESR(),
-            DockerFirefoxRelease(),
-            DockerFirefoxBeta(),
-            DockerFirefoxESR(),
-        )
+    def __init__(self):
+        self._browsers = {
+            ('chrome', 'stable'): 'CHROME_FLAVOR=stable',
+            ('chrome', 'beta'): 'CHROME_FLAVOR=beta',
+            ('chrome', 'dev'): 'CHROME_FLAVOR=unstable',
+            ('firefox', 'esr'): 'FIREFOX_VERSION=38.0.6',
+            ('firefox', 'release'): 'FIREFOX_VERSION=39.0',
+            ('firefox', 'beta'): 'FIREFOX_VERSION=39.0',
+        }
+
+    # Override
+    def do_create_browser(self, usm_name, usm_channel, browser_name, browser_channel):
+        env = self._create_browser(browser_name, browser_channel)
+        return DockerBrowser(env, usm_name, usm_channel)
+
+    def _create_browser(self, name, channel):
+        return self._browsers[name, channel]
+
+
+class DockerBrowser(Runner):
+
+    def __init__(self, env, usm_name, usm_channel):
+        super(DockerBrowser, self).__init__()
+
+        self._env = env
+        self._usm_name = usm_name
+        self._usm_channel = usm_channel
+
+    @gen.coroutine
+    def do_prepare(self):
+        yield shell_call([
+            'docker', 'run',
+            '--rm',
+            '--name=browser',
+            '-e', self._env,
+            'elgalu/selenium',
+        ])
