@@ -14,6 +14,24 @@ pip install -r requirements.txt
 python -m monitord
 ```
 
+## Running Flavors
+
+* docker
+* local
+
+## Browser Channels
+
+* Mozilla Firefox
+  * ESR
+  * Release
+  * Beta
+  * Aurora
+  * Nightly
+* Google Chrome
+  * Stable
+  * Beta
+  * Dev
+
 
 [Python]: https://www.python.org/
 [virtualenvwrapper]: http://virtualenvwrapper.readthedocs.org/en/latest/

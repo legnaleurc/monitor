@@ -37,6 +37,12 @@ class FlavorFactory(object):
         Flavor = cls._flavors[flavor]
         return Flavor(*args, **kwargs)
 
+    def create_browsers(self):
+        return self.do_create_browsers()
+
+    def do_create_browsers(self):
+        raise NotImplementedError()
+
 
 class Runner(object):
 
