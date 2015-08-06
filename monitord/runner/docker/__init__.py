@@ -16,14 +16,16 @@ class Flavor(FlavorFactory):
             ('firefox', 'release'): 'FIREFOX_VERSION=39.0',
             ('firefox', 'beta'): 'FIREFOX_VERSION=39.0',
         }
+        self._mapping = {
+            'tampermonkey': ChromeTampermonkeyRunner,
+            'greasemonkey': FirefoxGreasemonkeyRunner,
+        }
 
     # Override
     def do_create_browser(self, usm_name, usm_channel, browser_name, browser_channel):
-        env = self._create_browser(browser_name, browser_channel)
-        return DockerBrowser(env, usm_name, usm_channel)
-
-    def _create_browser(self, name, channel):
-        return self._browsers[name, channel]
+        env = self._browsers[browser_name, browser_channel]
+        Class = self._mapping[usm_name]
+        return Class(env, usm_channel)
 
 
 class ChromeTampermonkeyRunner(Runner, TampermonkeyMixin):
