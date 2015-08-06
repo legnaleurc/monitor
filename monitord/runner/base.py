@@ -179,3 +179,52 @@ class TampermonkeyMixin(Mixin):
             if self.driver.current_url.startswith('chrome-extension://'):
                 install = self.driver.find_element_by_css_selector('input.install[value$=nstall]')
                 install.click()
+
+
+class GreasemonkeyMixin(Mixin):
+
+    def __init__(self, *args, **kwargs):
+        super(GreasemonkeyMixin, self).__init__(*args, **kwargs)
+
+        self._amo_url = {
+            '1.x': 'https://addons.mozilla.org/firefox/downloads/file/243212/greasemonkey-1.15-fx.xpi',
+            '3.x': 'https://addons.mozilla.org/firefox/downloads/file/331462/greasemonkey-3.3-fx.xpi',
+        }
+        self._xpi_path = {
+            '1.x': op.join(tempfile.gettempdir(), 'gm_1_x.xpi'),
+            '3.x': op.join(tempfile.gettempdir(), 'gm_3_x.xpi'),
+        }
+        self._helper_url = 'https://github.com/legnaleurc/gmautoinstall/raw/master/releases/gmautoinstall.xpi'
+        self._helper_path = op.join(tempfile.gettempdir(), 'gmautoinstall.xpi')
+
+    def close(self):
+        super(GreasemonkeyMixin, self).close()
+        for channel, path in self._xpi_path.items():
+            if op.exists(path):
+                os.remove(path)
+        if op.exists(self._helper_path):
+            os.remove(self._helper_path)
+
+    @gen.coroutine
+    def install_user_script_manager(self, profile, channel):
+        xpi_path = self._xpi_path[channel]
+        if not op.exists(xpi_path):
+            url = self._amo_url[channel]
+            yield download_to(url, xpi_path)
+        if not op.exists(self._helper_path):
+            yield download_to(self._helper_url, self._helper_path)
+        profile.add_extension(extension=xpi_path)
+        profile.add_extension(extension=self._helper_path)
+        profile.set_preference("extensions.greasemonkey.installDelay", 0);
+        profile.update_preferences()
+
+    @gen.coroutine
+    def install_user_script(self):
+        try:
+            self.driver.get(USERSCRIPT)
+        except Exception as e:
+            # expected exception: UI thread locked by modal dialog
+            pass
+        # wait for the dialog disappear
+        # TODO gmautoinstall should flag when it's finished, to avoid this
+        yield gen.sleep(1)
