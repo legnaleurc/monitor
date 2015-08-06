@@ -25,7 +25,7 @@ class DockerFlavor(FlavorFactory):
         return self._browsers[name, channel]
 
 
-class DockerBrowser(Runner):
+class DockerBrowser(Runner, TampermonkeyMixin):
 
     def __init__(self, env, usm_name, usm_channel):
         super(DockerBrowser, self).__init__()
@@ -36,6 +36,7 @@ class DockerBrowser(Runner):
 
     @gen.coroutine
     def do_prepare(self):
+        # spawn docker
         yield shell_call([
             'docker', 'run',
             '--rm',
@@ -43,3 +44,12 @@ class DockerBrowser(Runner):
             '-e', self._env,
             'elgalu/selenium',
         ])
+
+        profile = webdriver.ChromeOptions()
+        yield self.install_user_script_manager(profile, self._usm_channel)
+
+        self.driver = webdriver.Remote(browser_profile=profile, desired_capabilities=DesiredCapabilities.CHROME)
+
+        # Tampermonkey may not ready yet
+        yield gen.sleep(5)
+        yield self.install_user_script()
