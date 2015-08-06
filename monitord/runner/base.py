@@ -2,8 +2,11 @@ import contextlib
 import os.path as op
 import tempfile
 import os
+import importlib
 
-from tornado import gen, httpclient
+from tornado import gen, httpclient, util
+
+from monitord import settings
 
 
 USERSCRIPT = 'https://adsbypasser.github.io/releases/adsbypasser.user.js'
@@ -58,12 +61,14 @@ class FlavorFactory(object):
 
     @classmethod
     def create(cls, flavor, *args, **kwargs):
-        if flavor not in cls._flavors:
-            return None
-        Flavor = cls._flavors[flavor]
-        return Flavor(*args, **kwargs)
+        #if flavor not in cls._flavors:
+            #return None
+        #Flavor = cls._flavors[flavor]
+        pkg = util.import_object('monitord.runner.' + flavor)
+        return pkg.Flavor(*args, **kwargs)
 
     def create_browsers(self):
+        usms = settings.read_user_script_managers()
         return [self.do_create_browser(usm_name, usm_channel, b_name, b_channel) for usm_name, usm_channel, b_name, b_channel in usms]
 
     def do_create_browser(self, usm_name, usm_channel, browser_name, browser_channel):

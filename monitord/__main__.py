@@ -5,8 +5,9 @@ import sys
 
 from tornado import ioloop, web, log
 
-from monitord.webui import view
+from monitord.webui import view, api
 from monitord import settings
+from monitord import core
 
 
 def main(args=None):
@@ -15,14 +16,18 @@ def main(args=None):
 
     setup_logger()
 
-    main_loop = ioloop.IOLoop.instance();
+    main_loop = ioloop.IOLoop.instance()
+
+    ctlr = core.Controller()
 
     opts = {
         'static_path': os.path.join(settings.MODULE_ROOT, 'webui/static'),
         'debug': True,
+        'controller': ctlr,
     }
     application = web.Application([
         (r'/', view.RootHandler),
+        (r'/api/v1/run', api.RunHandler),
     ], **opts)
 
     application.listen(8000)

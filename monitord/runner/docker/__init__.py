@@ -1,10 +1,11 @@
 from tornado import gen
+from selenium import webdriver
 
-from monitord.runner.base import FlavorFactory, Runner
+from monitord.runner.base import FlavorFactory, Runner, TampermonkeyMixin
 from monitord.util import shell_call
 
 
-class DockerFlavor(FlavorFactory):
+class Flavor(FlavorFactory):
 
     def __init__(self):
         self._browsers = {
@@ -37,6 +38,7 @@ class DockerBrowser(Runner, TampermonkeyMixin):
     @gen.coroutine
     def do_prepare(self):
         # spawn docker
+        # FIXME it will not leave, use add_callback
         yield shell_call([
             'docker', 'run',
             '--rm',
