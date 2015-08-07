@@ -34,10 +34,11 @@ class DockerRunner(Runner):
         self._loop = ioloop.IOLoop.current()
         self._notifiers = {}
 
+    @gen.coroutine
     def close(self):
         super(DockerRunner, self).close()
         # FIXME is it possible to wait until closed
-        self._loop.add_callback(self.stop_container)
+        yield self.stop_container()
 
     def _notify(self, topic, *args, **kwargs):
         if topic not in self._notifiers:

@@ -21,4 +21,4 @@ class Controller(object):
             for case in cases:
                 result = yield browser.run(case[0], case[1])
                 print(result)
-            browser.close()
+            yield gen.maybe_future(browser.close())
