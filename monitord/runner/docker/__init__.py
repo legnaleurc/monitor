@@ -1,7 +1,8 @@
 import subprocess as sp
 import signal
+import re
 
-from tornado import gen, process, ioloop
+from tornado import gen, process, ioloop, iostream
 from selenium import webdriver
 
 from monitord.runner.base import FlavorFactory, Runner, TampermonkeyMixin, GreasemonkeyMixin
@@ -85,6 +86,7 @@ class DockerRunner(Runner):
         return exit_code
 
     def _parse_container_output(self, chunk):
+        print(chunk)
         if re.search(r'Selenium Server is up and running', chunk) is not None:
             self._notify('start', True)
 
