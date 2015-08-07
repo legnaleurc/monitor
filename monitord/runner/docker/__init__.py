@@ -1,6 +1,7 @@
 import subprocess as sp
 import signal
 import re
+import os
 
 from tornado import gen, process, ioloop, iostream
 from selenium import webdriver
@@ -114,7 +115,7 @@ class ChromeTampermonkeyRunner(DockerRunner, TampermonkeyMixin):
         profile = webdriver.ChromeOptions()
         yield self.install_user_script_manager(profile, self._usm_channel)
 
-        caps = DesiredCapabilities.CHROME.deepcopy()
+        caps = DesiredCapabilities.CHROME.copy()
         caps.update(profile.to_capabilities())
         self.driver = webdriver.Remote(desired_capabilities=caps)
 
