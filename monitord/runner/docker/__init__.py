@@ -86,9 +86,13 @@ class DockerRunner(Runner):
                 self._parse_container_output(chunk.decode('utf-8'))
             except iostream.StreamClosedError:
                 break
-        exit_code = yield self._container.wait_for_exit()
-        self._notify('stop', True)
-        return exit_code
+        try:
+            exit_code = yield self._container.wait_for_exit()
+            self._notify('stop', True)
+            return exit_code
+        except sp.CalledProcessError as e:
+            self._notify('stop', False)
+            return -1
 
     def _parse_container_output(self, chunk):
         print(chunk)
