@@ -3,6 +3,24 @@ MAINTAINER wcpan
 
 USER root
 
+
+# For Google Chrome:
+#   gconf-service
+#   libasound2
+#   libatk1.0-0
+#   libcairo2
+#   libgconf-2-4
+#   libgdk-pixbuf2.0-0
+#   libgtk2.0-0
+#   libpango1.0-0
+#   libxcomposite1
+#   libxss1
+#   libxtst6
+#   libappindicator1
+#   libcurl3
+#   xdg-utils
+# For Mozilla Firefox:
+#   python-pip
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gconf-service \
   libasound2 \
@@ -17,11 +35,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libxtst6 \
   libappindicator1 \
   libcurl3 \
-  xdg-utils
+  xdg-utils \
+  python-pip && pip install -U mozdownload mozInstall
 
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
 COPY chrome_config.json /opt/selenium/chrome_config.json
+COPY firefox_config.json /opt/selenium/firefox_config.json
 
 USER seluser
 #RUN apt-get update && apt-get install --no-install-recommends -y git
