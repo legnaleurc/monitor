@@ -81,6 +81,7 @@ function setup_mozilla_firefox {
   mozdownload -a 'firefox' -d "$firefox_tarball_path" -l 'en-US' -p 'linux64' -t "$type" -v "$version" --branch="$branch"
   sudo mozinstall -d '/opt' "$firefox_tarball_path"
   rm "$firefox_tarball_path"
+  sudo ln -s '/opt/firefox/firefox' '/usr/local/bin/firefox'
 
   sudo mv /opt/selenium/firefox_config.json /opt/selenium/config.json
 }
