@@ -72,7 +72,7 @@ class DockerRunner(Runner):
             '-e', 'BROWSER_NAME={0}'.format(self._browser_name),
             '-e', 'BROWSER_CHANNEL={0}'.format(self._browser_channel),
             'wcpan/monitor:latest',
-        ], stdout=process.STREAM, stderr=sp.STDOUT)
+        ], stdout=process.Subprocess.STREAM, stderr=sp.STDOUT)
 
         while True:
             try:
