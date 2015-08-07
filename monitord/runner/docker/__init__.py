@@ -110,7 +110,9 @@ class ChromeTampermonkeyRunner(DockerRunner, TampermonkeyMixin):
         profile = webdriver.ChromeOptions()
         yield self.install_user_script_manager(profile, self._usm_channel)
 
-        self.driver = webdriver.Remote(browser_profile=profile, desired_capabilities=DesiredCapabilities.CHROME)
+        caps = DesiredCapabilities.CHROME.deepcopy()
+        caps.update(profile.to_capabilities())
+        self.driver = webdriver.Remote(desired_capabilities=caps)
 
         # Tampermonkey may not ready yet
         yield gen.sleep(5)

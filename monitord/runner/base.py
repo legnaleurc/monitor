@@ -93,7 +93,8 @@ class Runner(Mixin):
 
     def close(self):
         super(Runner, self).close()
-        self._driver.quit()
+        if self._driver:
+            self._driver.quit()
 
     @property
     def driver(self):
