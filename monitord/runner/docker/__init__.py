@@ -110,7 +110,7 @@ class ChromeTampermonkeyRunner(DockerRunner, TampermonkeyMixin):
         yield self.install_user_script()
 
 
-class FirefoxGreasemonkeyRunner(Runner, GreasemonkeyMixin):
+class FirefoxGreasemonkeyRunner(DockerRunner, GreasemonkeyMixin):
 
     def __init__(self, browser_name, browser_channel, usm_channel):
         super(FirefoxGreasemonkeyRunner, self).__init__(browser_name, browser_channel, usm_channel)
