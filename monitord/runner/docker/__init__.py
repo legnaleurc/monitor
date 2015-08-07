@@ -4,6 +4,7 @@ import re
 
 from tornado import gen, process, ioloop, iostream
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from monitord.runner.base import FlavorFactory, Runner, TampermonkeyMixin, GreasemonkeyMixin
 
