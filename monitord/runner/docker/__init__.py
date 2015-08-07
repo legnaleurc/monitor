@@ -50,7 +50,8 @@ class DockerRunner(Runner):
 
     @gen.coroutine
     def start_container(self):
-        yield gen.Task(self._start_container)
+        ok = yield gen.Task(self._start_container)
+        return ok
 
     def _start_container(self, callback):
         self._notifiers['start'] = callback
@@ -61,6 +62,9 @@ class DockerRunner(Runner):
         yield gen.Task(self._stop_container)
 
     def _stop_container(self, callback):
+        if not self._container or not self._container.proc:
+            callback(False)
+            return
         self._notifiers['stop'] = callback
         os.kill(self._container.proc.pid, signal.SIGINT)
 

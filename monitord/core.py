@@ -17,8 +17,10 @@ class Controller(object):
         runners = flavor.create_browsers()
         cases = settings.read_test_cases()
         for browser in runners:
-            yield browser.prepare()
-            for case in cases:
-                result = yield browser.run(case[0], case[1])
-                print(result)
-            yield gen.maybe_future(browser.close())
+            try:
+                yield browser.prepare()
+                for case in cases:
+                    result = yield browser.run(case[0], case[1])
+                    print(result)
+            finally:
+                yield gen.maybe_future(browser.close())
