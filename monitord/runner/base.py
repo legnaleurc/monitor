@@ -91,10 +91,12 @@ class Runner(Mixin):
 
         self._driver = None
 
+    @gen.coroutine
     def close(self):
-        super(Runner, self).close()
+        yield super(Runner, self).close()
         if self._driver:
             self._driver.quit()
+            self._driver = None
 
     @property
     def driver(self):
@@ -151,8 +153,9 @@ class TampermonkeyMixin(Mixin):
             'beta': op.join(tempfile.gettempdir(), 'tm_beta.crx'),
         }
 
+    @gen.coroutine
     def close(self):
-        super(TampermonkeyMixin, self).close()
+        yield super(TampermonkeyMixin, self).close()
         for channel, path in self._crx_path.items():
             if op.exists(path):
                 os.remove(path)
@@ -198,8 +201,9 @@ class GreasemonkeyMixin(Mixin):
         self._helper_url = 'https://github.com/legnaleurc/gmautoinstall/raw/master/releases/gmautoinstall.xpi'
         self._helper_path = op.join(tempfile.gettempdir(), 'gmautoinstall.xpi')
 
+    @gen.coroutine
     def close(self):
-        super(GreasemonkeyMixin, self).close()
+        yield super(GreasemonkeyMixin, self).close()
         for channel, path in self._xpi_path.items():
             if op.exists(path):
                 os.remove(path)

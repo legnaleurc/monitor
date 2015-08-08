@@ -28,6 +28,7 @@ def main(args=None):
     application = web.Application([
         (r'/', view.RootHandler),
         (r'/api/v1/run', api.RunHandler),
+        (r'/api/v1/cancel', api.CancelHandler),
     ], **opts)
 
     application.listen(8000)

@@ -39,7 +39,7 @@ class DockerRunner(Runner):
 
     @gen.coroutine
     def close(self):
-        super(DockerRunner, self).close()
+        yield super(DockerRunner, self).close()
         # FIXME is it possible to wait until closed
         yield self.stop_container()
 
