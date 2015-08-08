@@ -19,8 +19,9 @@ class Controller(object):
         for browser in runners:
             try:
                 yield browser.prepare()
-                for case in cases:
-                    result = yield browser.run(case[0], case[1])
-                    print(result)
+                for name, case in cases.items():
+                    for c in case:
+                        result = yield browser.run(c['from'], case['to'])
+                        print(result)
             finally:
                 yield gen.maybe_future(browser.close())

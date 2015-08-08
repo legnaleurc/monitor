@@ -61,7 +61,8 @@ class DockerRunner(Runner):
 
     @gen.coroutine
     def stop_container(self):
-        yield gen.Task(self._stop_container)
+        ok = yield gen.Task(self._stop_container)
+        return ok
 
     def _stop_container(self, callback):
         if not self._container or not self._container.proc:
