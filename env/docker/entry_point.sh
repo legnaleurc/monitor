@@ -1,16 +1,42 @@
-#!/bin/bash
+#! /bin/bash
 
-export GEOMETRY="$SCREEN_WIDTH""x""$SCREEN_HEIGHT""x""$SCREEN_DEPTH"
 
-if [ -z "$BROWSER_NAME" ] || [ -z "$BROWSER_CHANNEL" ] ; then
-  echo 'Invalid browser.' 1>&2
-  exit 1
-fi
+function main {
+  export GEOMETRY="$SCREEN_WIDTH""x""$SCREEN_HEIGHT""x""$SCREEN_DEPTH"
+
+  if [ -z "$BROWSER_NAME" ] || [ -z "$BROWSER_CHANNEL" ] ; then
+    echo 'Invalid browser.' 1>&2
+    exit 1
+  fi
+  if [ "$BROWSER_NAME" = 'chrome' ] ; then
+    setup_google_chrome "$BROWSER_CHANNEL"
+  elif [ "$BROWSER_NAME" = 'firefox' ] ; then
+    setup_mozilla_firefox "$BROWSER_CHANNEL"
+  else
+    echo "Unknown browser." 1>&2
+    exit 1
+  fi
+
+  DISPLAY=$DISPLAY \
+    xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR" \
+    java -jar /opt/selenium/selenium-server-standalone.jar ${JAVA_OPTS} &
+  NODE_PID=$!
+
+  trap shutdown SIGTERM SIGINT
+
+  if [ -n "$VNC" ] ; then
+    setup_vnc
+  fi
+
+  wait $NODE_PID
+}
+
 
 function shutdown {
   kill -s SIGTERM $NODE_PID
   wait $NODE_PID
 }
+
 
 function setup_google_chrome {
   channel="$1"
@@ -32,7 +58,10 @@ function setup_google_chrome {
   rm -rf "$google_chrome_path"
 
   sudo mv /opt/selenium/chrome_config.json /opt/selenium/config.json
+  sudo mv /opt/google/chrome/chrome_launcher.sh /opt/google/chrome/google-chrome
+  sudo chmod +x /opt/google/chrome/google-chrome
 }
+
 
 function setup_chromedriver {
   chromedriver_version=$(wget -q -O - 'http://chromedriver.storage.googleapis.com/LATEST_RELEASE')
@@ -48,6 +77,7 @@ function setup_chromedriver {
   sudo chmod 755 "$chromedriver_path/chromedriver-$chromedriver_version"
   sudo ln -fs "$chromedriver_path/chromedriver-$chromedriver_version" /usr/bin/chromedriver
 }
+
 
 function setup_mozilla_firefox {
   channel="$1"
@@ -86,20 +116,19 @@ function setup_mozilla_firefox {
   sudo mv /opt/selenium/firefox_config.json /opt/selenium/config.json
 }
 
-if [ "$BROWSER_NAME" = 'chrome' ] ; then
-  setup_google_chrome "$BROWSER_CHANNEL"
-elif [ "$BROWSER_NAME" = 'firefox' ] ; then
-  setup_mozilla_firefox "$BROWSER_CHANNEL"
-else
-  echo "Unknown browser." 1>&2
-  exit 1
-fi
 
-# TODO: Look into http://www.seleniumhq.org/docs/05_selenium_rc.jsp#browser-side-logs
+function setup_vnc {
+  for i in $(seq 1 10) ; do
+    xdpyinfo -display $DISPLAY >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      break
+    fi
+    echo Waiting xvfb...
+    sleep 0.5
+  done
 
-xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR" \
-  java -jar /opt/selenium/selenium-server-standalone.jar &
-NODE_PID=$!
+  x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
+}
 
-trap shutdown SIGTERM SIGINT
-wait $NODE_PID
+
+main

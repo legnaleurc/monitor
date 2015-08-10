@@ -21,6 +21,8 @@ USER root
 #   xdg-utils
 # For Mozilla Firefox:
 #   python-pip
+# For VNC:
+#   x11vnc
 RUN apt-get update && apt-get install -y --no-install-recommends \
   gconf-service \
   libasound2 \
@@ -36,16 +38,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libappindicator1 \
   libcurl3 \
   xdg-utils \
-  python-pip && pip install -U mozdownload mozInstall
+  python-pip \
+  x11vnc \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install -U mozdownload mozInstall
 
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
 COPY chrome_config.json /opt/selenium/chrome_config.json
 COPY firefox_config.json /opt/selenium/firefox_config.json
+COPY chrome_launcher.sh /opt/google/chrome/chrome_launcher.sh
 
 USER seluser
-#RUN apt-get update && apt-get install --no-install-recommends -y git
-#WORKDIR /usr/local/src
-#RUN git clone https://github.com/legnaleurc/monitor.git
-#WORKDIR /usr/local/src/monitor
-#RUN pip install -r requirements.txt
+
+RUN mkdir -p ~/.vnc \
+  && x11vnc -storepasswd secret ~/.vnc/passwd
