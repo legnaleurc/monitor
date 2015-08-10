@@ -1,19 +1,15 @@
 #! /bin/sh
 
+echo '
+deb http://httpredir.debian.org/debian jessie-updates main
+deb-src http://httpredir.debian.org/debian jessie-updates main
+
+deb http://httpredir.debian.org/debian jessie-backports main
+deb-src http://httpredir.debian.org/debian jessie-backports main' >> '/etc/apt/sources.list'
 # update repository
 apt-get update
 
 # setup Docker
-apt-get install -y docker.io
+apt-get install -y --no-install-recommends docker.io
 # grant permission
 adduser vagrant docker
-# restart Docker
-service docker.io stop
-sleep 1
-service docker.io start
-# install Selenium Grid Hub
-docker run -d -p 4444:4444 --name grid_hub selenium/hub
-# install Chrome Node
-docker run -d --link grid_hub:hub --name node_chrome selenium/node-chrome
-# install Firefox Node
-docker run -d --link grid_hub:hub --name node_firefox selenium/node-firefox

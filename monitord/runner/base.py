@@ -80,6 +80,7 @@ class Mixin(object):
     def __init__(self, *args, **kwargs):
         pass
 
+    @gen.coroutine
     def close(self):
         pass
 

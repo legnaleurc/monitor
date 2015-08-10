@@ -4,3 +4,4 @@
 *.xpi
 *.crx
 /tmp/*
+.vagrant
