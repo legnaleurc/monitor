@@ -1,5 +1,5 @@
-FROM selenium/node-base:latest
-MAINTAINER wcpan
+FROM selenium/node-base:2.47.1
+MAINTAINER Wei-Cheng Pan <legnaleurc@gmail.com>
 
 USER root
 
