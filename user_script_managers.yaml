@@ -2,8 +2,18 @@ greasemonkey:
   -
     browser:
       name: firefox
-      channel: esr
+      channel: 24_esr
     channel: 1.x
+  -
+    browser:
+      name: firefox
+      channel: prior_esr
+    channel: 3.x
+  -
+    browser:
+      name: firefox
+      channel: esr
+    channel: 3.x
   -
     browser:
       name: firefox
@@ -13,6 +23,16 @@ greasemonkey:
     browser:
       name: firefox
       channel: beta
+    channel: 3.x
+  -
+    browser:
+      name: firefox
+      channel: aurora
+    channel: 3.x
+  -
+    browser:
+      name: firefox
+      channel: nightly
     channel: 3.x
 tampermonkey:
   -
@@ -28,10 +48,20 @@ tampermonkey:
   -
     browser:
       name: chrome
+      channel: dev
+    channel: stable
+  -
+    browser:
+      name: chrome
       channel: stable
     channel: beta
   -
     browser:
       name: chrome
       channel: beta
+    channel: beta
+  -
+    browser:
+      name: chrome
+      channel: dev
     channel: beta

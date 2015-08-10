@@ -12,14 +12,6 @@ from monitord import settings
 USERSCRIPT = 'https://adsbypasser.github.io/releases/adsbypasser.user.js'
 
 
-@contextlib.contextmanager
-def quiting(thing):
-    try:
-        yield thing
-    finally:
-        thing.quit()
-
-
 def chunks(readable_object, buffer_size):
     while True:
         chunk = readable_object.read(buffer_size)
@@ -39,19 +31,6 @@ def download_to(remote, local, headers=None):
             fout.write(chunk)
             size += len(chunk)
             fout.flush()
-    return size
-
-
-@gen.coroutine
-def download_to_stream(remote, stream, headers=None):
-    client = httpclient.AsyncHTTPClient()
-    request = httpclient.HTTPRequest(remote, method='GET', headers=headers)
-    response = yield client.fetch(request)
-    size = 0
-    for chunk in chunks(response.buffer, 65536):
-        stream.write(chunk)
-        size += len(chunk)
-        stream.flush()
     return size
 
 

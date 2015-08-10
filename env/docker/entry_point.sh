@@ -87,6 +87,12 @@ function setup_mozilla_firefox {
   branch='mozilla-central'
 
   case "$channel" in
+    24_esr)
+      version='latest-24.0esr'
+    ;;
+    prior_esr)
+      version='latest-prior-esr'
+    ;;
     esr)
       version='latest-esr'
     ;;

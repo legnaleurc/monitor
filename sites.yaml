@@ -1,16 +1,10 @@
 adf.ly:
   -
-    from: http://adf.ly/96yw
-    to: https://www.google.com/
-  -
     from: http://u.shareme.in/1xx
     to: http://www.megaleech.us/
   -
     from: http://adf.ly/3060644/matsumoto-mother-youtube
     to: https://www.youtube.com/watch?v=wUEPptBbIXI
-  -
-    from: http://adf.ly/ad/locked?url=96yw&t=s
-    to: https://www.google.com/
 linkbucks.com:
   -
     from: http://linkbucks.com/BXHk/url/92b96ad805273519f7b83349e855b6296666e0cf77334c7c5606777aebde100db5b6f44e8dc30b

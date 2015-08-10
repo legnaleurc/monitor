@@ -18,6 +18,7 @@ class Controller(object):
     def queue_test(self):
         if self._running:
             # already running
+            print('still running')
             return
         self._running = True
         # TODO read flavor from args
@@ -29,8 +30,12 @@ class Controller(object):
                 yield runner.prepare()
                 for name, case in cases.items():
                     for c in case:
+                        print('from: {0}'.format(c['from']))
+                        print('to: {0}'.format(c['to']))
                         result = yield runner.run(c['from'], c['to'])
                         print(result)
+            except Exception as e:
+                print(e)
             finally:
                 yield runner.close()
         self._running = False

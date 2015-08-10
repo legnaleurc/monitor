@@ -76,9 +76,11 @@ class DockerRunner(Runner):
         self._container = process.Subprocess([
             'docker', 'run',
             '--rm',
-            '-p=127.0.0.1:4444:4444',
             '-e', 'BROWSER_NAME={0}'.format(self._browser_name),
             '-e', 'BROWSER_CHANNEL={0}'.format(self._browser_channel),
+            '-p=127.0.0.1:4444:4444',
+            '-e', 'VNC=1',
+            '-p=0.0.0.0:5900:5900',
             'wcpan/monitor:latest',
         ], stdout=process.Subprocess.STREAM, stderr=sp.STDOUT)
 
