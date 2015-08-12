@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from monitord.runner.base import FlavorFactory, Runner, TampermonkeyMixin, GreasemonkeyMixin
+from monitord import util
 
 
 class Flavor(FlavorFactory):
@@ -35,6 +36,7 @@ class DockerRunner(Runner):
 
         self._container = None
         self._loop = ioloop.IOLoop.current()
+        self._logger = util.get_logger()
         self._notifiers = {}
 
     @gen.coroutine
@@ -99,7 +101,7 @@ class DockerRunner(Runner):
             return -1
 
     def _parse_container_output(self, chunk):
-        print(chunk)
+        self._logger.debug(chunk.strip())
         if re.search(r'Selenium Server is up and running', chunk) is not None:
             self._notify('start', True)
 

@@ -10,7 +10,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from monitord.runner.base import FlavorFactory, Runner, TampermonkeyMixin, GreasemonkeyMixin
-from monitord import settings
+from monitord import settings, util
 
 
 class Flavor(FlavorFactory):
@@ -39,6 +39,7 @@ class VagrantRunner(Runner):
         self._container_id = None
         self._container_logger = None
         self._loop = ioloop.IOLoop.current()
+        self._logger = util.get_logger()
         self._notifiers = {}
 
     @gen.coroutine
@@ -76,7 +77,6 @@ class VagrantRunner(Runner):
 
     def _stop_container(self, callback):
         self._notifiers['stop'] = callback
-        print('killed, wait for exit ...')
 
     @gen.coroutine
     def _real_kill_container(self):
@@ -119,7 +119,7 @@ class VagrantRunner(Runner):
             return -1
 
     def _parse_container_output(self, chunk):
-        print(chunk)
+        self._logger.debug(chunk.strip())
         if re.search(r'Selenium Server is up and running', chunk) is not None:
             self._notify('start', True)
 

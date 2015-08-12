@@ -1,4 +1,8 @@
-from tornado import process, gen
+import logging
+import tempfile
+import os.path as op
+
+from tornado import log
 
 
 class Singleton(type):
@@ -11,8 +15,19 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-@gen.coroutine
-def shell_call(args):
-    p = process.Subprocess(args)
-    exit_code = yield p.wait_for_exit()
-    return exit_code
+def setup_logger():
+    log.enable_pretty_logging()
+
+    logger = get_logger()
+    logger.propagate = False
+    logger.setLevel(logging.DEBUG)
+
+    handler = logging.FileHandler(op.join(tempfile.gettempdir(), 'monitord.log'))
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('{asctime}|{levelname:_<8}|{message}', style='{')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+
+def get_logger():
+    return logging.getLogger('monitord')

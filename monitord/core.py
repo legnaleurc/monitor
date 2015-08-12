@@ -1,7 +1,7 @@
 from tornado import gen
 
 from monitord.runner import FlavorFactory
-from monitord import settings
+from monitord import settings, util
 
 
 class Controller(object):
@@ -9,6 +9,7 @@ class Controller(object):
     def __init__(self):
         self._running = False
         self._canceling = False
+        self._logger = util.get_logger()
 
     @property
     def canceling():
@@ -18,7 +19,7 @@ class Controller(object):
     def queue_test(self):
         if self._running:
             # already running
-            print('still running')
+            self._logger.warn('still running')
             return
         self._running = True
         # TODO read flavor from args
@@ -30,16 +31,17 @@ class Controller(object):
                 yield runner.prepare()
                 for name, case in cases.items():
                     for c in case:
-                        print('from: {0}'.format(c['from']))
-                        print('to: {0}'.format(c['to']))
+                        self._logger.info('from: {0}'.format(c['from']))
+                        self._logger.info('to: {0}'.format(c['to']))
                         result = yield runner.run(c['from'], c['to'])
-                        print(result)
+                        self._logger.info(result)
             except Exception as e:
-                print(e)
+                self._logger.exception('catched exception')
             finally:
                 yield runner.close()
         self._running = False
         self._canceling = False
+        self._logger.info('done testing')
 
     def cancel_test(self):
         self._canceling = True

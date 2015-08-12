@@ -6,15 +6,14 @@ import sys
 from tornado import ioloop, web, log
 
 from monitord.webui import view, api
-from monitord import settings
-from monitord import core
+from monitord import settings, core, util
 
 
 def main(args=None):
     if args is None:
         args = sys.argv
 
-    setup_logger()
+    util.setup_logger()
 
     main_loop = ioloop.IOLoop.instance()
 
@@ -36,10 +35,6 @@ def main(args=None):
     main_loop.start()
 
     return 0
-
-
-def setup_logger():
-    log.enable_pretty_logging()
 
 
 if __name__ == '__main__':
