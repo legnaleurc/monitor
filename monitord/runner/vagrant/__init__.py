@@ -80,7 +80,7 @@ class VagrantRunner(Runner):
 
     @gen.coroutine
     def _real_kill_container(self):
-        p = self._spawn_vagrant_process([
+        p = self._spawn_in_vagrant([
             '/vagrant/stop_container.sh', self._container_id,
         ], quiet=True)
         exit_code = yield p.wait_for_exit()
@@ -88,14 +88,20 @@ class VagrantRunner(Runner):
 
     @gen.coroutine
     def _spawn_container(self):
-        p = self._spawn_vagrant_process([
+        # start vagrant
+        p = self._vagrant_do(['up'], quiet=True)
+        exit_code = yield p.wait_for_exit()
+
+        # start the main container
+        p = self._spawn_in_vagrant([
             '/vagrant/start_container.sh', self._browser_name, self._browser_channel,
         ])
         output = yield p.stdout.read_until_close()
         exit_code = yield p.wait_for_exit()
         self._container_id = output.decode('utf-8').strip()
 
-        self._container_logger = self._spawn_vagrant_process([
+        # watch the container output
+        self._container_logger = self._spawn_in_vagrant([
             'docker', 'logs', '-f', self._container_id,
         ])
         while True:
@@ -117,19 +123,21 @@ class VagrantRunner(Runner):
         if re.search(r'Selenium Server is up and running', chunk) is not None:
             self._notify('start', True)
 
-    def _to_vagrant_ssh(self, cmd_list):
+    def _spawn_in_vagrant(self, cmd_list, quiet=False):
         cmd = map(shlex.quote, cmd_list)
         cmd = ' '.join(cmd)
-        return [
-            'vagrant', 'ssh',
+        return self._vagrant_do([
+            'ssh',
             '-c', cmd,
             '--',
             '-q',
-        ]
+        ], quiet=quiet)
 
-    def _spawn_vagrant_process(self, cmd_list, quiet=False):
+    def _vagrant_do(self, cmd_list, quiet=False):
         out_flag = process.Subprocess.STREAM if not quiet else sp.DEVNULL
-        return process.Subprocess(self._to_vagrant_ssh(cmd_list), stdout=out_flag, stderr=sp.STDOUT, cwd=op.join(settings.MODULE_ROOT, '../env/vagrant'))
+        cmd = ['vagrant']
+        cmd.extend(cmd_list)
+        return process.Subprocess(cmd, stdout=out_flag, stderr=sp.STDOUT, cwd=op.join(settings.MODULE_ROOT, '../env/vagrant'))
 
 
 class ChromeTampermonkeyRunner(VagrantRunner, TampermonkeyMixin):
