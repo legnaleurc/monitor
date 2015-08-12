@@ -22,7 +22,7 @@ class Controller(object):
             return
         self._running = True
         # TODO read flavor from args
-        flavor = FlavorFactory.create('docker')
+        flavor = FlavorFactory.create('vagrant')
         runners = flavor.create_browsers()
         cases = settings.read_test_cases()
         for runner in runners:
