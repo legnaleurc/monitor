@@ -65,21 +65,26 @@ class VagrantRunner(Runner):
 
     @gen.coroutine
     def stop_container(self):
+        if self._container_id is None:
+            return False
+        # schedule the real killing action to run AFTER the callback been set
+        self._loop.add_callback(self._real_kill_container)
+        ok = yield gen.Task(self._stop_container)
+        self._container_id = None
+        self._container_logger = None
+        return ok
+
+    def _stop_container(self, callback):
+        self._notifiers['stop'] = callback
+        print('killed, wait for exit ...')
+
+    @gen.coroutine
+    def _real_kill_container(self):
         p = self._spawn_vagrant_process([
             '/vagrant/stop_container.sh', self._container_id,
         ], quiet=True)
-
-        ok = yield gen.Task(self._stop_container)
         exit_code = yield p.wait_for_exit()
-
-        return ok and exit_code == 0
-
-    def _stop_container(self, callback):
-        if self._container_id is None:
-            callback(False)
-            return
-        self._notifiers['stop'] = callback
-        print('killed, wait for exit ...')
+        return exit_code
 
     @gen.coroutine
     def _spawn_container(self):
