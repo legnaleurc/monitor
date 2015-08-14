@@ -5,3 +5,4 @@
 *.crx
 /tmp/*
 .vagrant
+/github.yaml

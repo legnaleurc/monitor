@@ -23,11 +23,13 @@ def main(args=None):
         'static_path': os.path.join(settings.MODULE_ROOT, 'webui/static'),
         'debug': True,
         'controller': ctlr,
+        'cookie_secret': 'TODO: change me',
     }
     application = web.Application([
         (r'/', view.RootHandler),
         (r'/api/v1/run', api.RunHandler),
         (r'/api/v1/cancel', api.CancelHandler),
+        (r'/login', api.LoginHandler),
     ], **opts)
 
     application.listen(8000)

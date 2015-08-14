@@ -30,3 +30,10 @@ def read_user_script_managers():
             b_name = usm_pack['browser']['name']
             b_channel = usm_pack['browser']['channel']
             yield usm_name, usm_channel, b_name, b_channel
+
+
+def read_github():
+    path = op.join(MODULE_ROOT, '../githug.yaml')
+    with open(path, 'r') as fin:
+        data = yaml.safe_load(fin)
+    return data
