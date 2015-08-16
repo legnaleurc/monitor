@@ -1,7 +1,12 @@
 firefox:
+  - 24_esr
+  - prior_esr
   - esr
   - release
   - beta
+  - aurora
+  - nightly
 chrome:
   - stable
   - beta
+  - dev

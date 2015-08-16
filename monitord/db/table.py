@@ -1,15 +1,19 @@
 # TODO database schema versioning
 # TODO decide which tables should be indexed
 
-import contextlib
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 
 Base = declarative_base()
+
+
+class PatchSeries(Base):
+
+    __tablename__ = 'schema_version'
+
+    version = Column(Integer)
+    patch = Column(String)
 
 
 class Browser(Base):
@@ -28,7 +32,15 @@ class UserScriptManager(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     channel = Column(String)
+
+
+class Shell(Base):
+
+    __tablename__ = 'shell'
+
+    id = Column(Integer, primary_key=True)
     browser_id = Column(Integer)
+    user_script_manager_id = Column(Integer)
     enabled = Column(Boolean)
 
 
@@ -41,6 +53,7 @@ class BuildStatus(Base):
     begin_time = Column(Integer)
     end_time = Column(Integer)
     status = Column(String)
+    detail = Column(String)
 
 
 class SiteResult(Base):
@@ -49,8 +62,9 @@ class SiteResult(Base):
 
     id = Column(Integer, primary_key=True)
     build_id = Column(Integer)
-    user_script_manager_id = Column(Integer)
+    shell_id = Column(Integer)
     name = Column(String)
+
 
 class User(Base):
 
@@ -62,25 +76,3 @@ class User(Base):
     admin = Column(Boolean)
     read = Column(Boolean)
     write = Column(Boolean)
-
-
-def _create_session_class():
-    engine = create_engine('sqlite:////tmp/monitord.sqlite')
-    Base.metadata.create_all(engine)
-    return sessionmaker(bind=engine)
-
-
-Session = _create_session_class()
-
-
-@contextlib.contextmanager
-def scoped():
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()

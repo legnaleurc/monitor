@@ -1,0 +1,6 @@
+greasemonkey:
+  - 1.x
+  - 3.x
+tampermonkey:
+  - stable
+  - beta
