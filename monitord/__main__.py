@@ -25,7 +25,7 @@ def main(args=None):
         'static_path': os.path.join(settings.MODULE_ROOT, 'webui/static'),
         'debug': True,
         'controller': ctlr,
-        'cookie_secret': 'TODO: change me',
+        'cookie_secret': settings.COOKIE_SECRET,
     }
     application = web.Application([
         (r'/', view.RootHandler),
@@ -34,7 +34,7 @@ def main(args=None):
         (r'/login', api.LoginHandler),
     ], **opts)
 
-    application.listen(8000)
+    application.listen(settings.HTTP_PORT)
 
     main_loop.start()
 

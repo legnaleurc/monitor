@@ -1,0 +1,13 @@
+database:
+  engine:
+  username:
+  password:
+  host:
+  port:
+  name:
+cookie_secret:
+http_port:
+github:
+  client_id:
+  client_secret:
+  redirect_uri:

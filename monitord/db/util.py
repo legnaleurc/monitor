@@ -5,10 +5,22 @@ from sqlalchemy.orm import sessionmaker
 from tornado import util as t_util
 
 from monitord.db import table
+from monitord import settings
 
 
-# TODO read setting
-engine = create_engine('sqlite:////tmp/monitord.sqlite')
+def create_engine_from_settings():
+    database = settings.DATABASE
+    if database['engine'] == 'sqlite':
+        if not database['name']:
+            dsn = 'sqlite://'
+        else:
+            dsn = 'sqlite:///{name}'.format(**database)
+    else:
+        dsn = '{engine}://{username}:{password}@{host}:{port}/{name}'.format(**database)
+    return create_engine(dsn)
+
+
+engine = create_engine_from_settings()
 # add session class
 Session = sessionmaker(bind=engine)
 

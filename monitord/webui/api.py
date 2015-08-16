@@ -52,7 +52,7 @@ class LoginHandler(web.RequestHandler, GithubOauth2Mixin):
 
     @gen.coroutine
     def get(self):
-        gh = settings.read_github()
+        gh = settings.GITHUB
         redirect_uri = gh['redirect_uri']
         client_id = gh['client_id']
         client_secret = gh['client_secret']
