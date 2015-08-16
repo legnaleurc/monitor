@@ -1,4 +1,3 @@
-# TODO database schema versioning
 # TODO decide which tables should be indexed
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -8,12 +7,12 @@ from sqlalchemy import Column, Integer, String, Boolean
 Base = declarative_base()
 
 
-class PatchSeries(Base):
+class SchemaVersion(Base):
 
     __tablename__ = 'schema_version'
 
+    id = Column(Integer, primary_key=True)
     version = Column(Integer)
-    patch = Column(String)
 
 
 class Browser(Base):
@@ -49,7 +48,7 @@ class BuildStatus(Base):
     __tablename__ = 'build_status'
 
     id = Column(Integer, primary_key=True)
-    user = Column(Integer)
+    user_id = Column(Integer)
     begin_time = Column(Integer)
     end_time = Column(Integer)
     status = Column(String)

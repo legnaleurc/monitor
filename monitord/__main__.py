@@ -6,7 +6,7 @@ import sys
 from tornado import ioloop, web, log
 
 from monitord.webui import view, api
-from monitord import settings, core, util
+from monitord import settings, core, util, db
 
 
 def main(args=None):
@@ -14,6 +14,8 @@ def main(args=None):
         args = sys.argv
 
     util.setup_logger()
+
+    db.migrate()
 
     main_loop = ioloop.IOLoop.instance()
 
